@@ -1,8 +1,8 @@
 # pysentel
-> A python script for fetching 1-wire sensor-data and ingesting in database via Telegraf.
+> A python script for fetching 1-wire sensor-data and ingesting in InfluxDB.
 
 
-Python script fetching sensor-data from e.g. DS18B20-sensors via the 1-wire protocol and using Telegraf to ingest these datapoints into a specified InfluxDB-bucket.
+Python script fetching sensor-data from e.g. DS18B20-sensors via the 1-wire protocol and ingest these datapoints into a specified InfluxDB-bucket.
 
 
 ## Installation
