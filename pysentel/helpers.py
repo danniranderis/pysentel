@@ -2,7 +2,7 @@
 """
 Helpers for pysentel.
 """
-from influxdb_client import InfluxDBClient, Point, WriteOptions
+from influxdb_client import InfluxDBClient
 from influxdb_client.client.write_api import SYNCHRONOUS
 
 
@@ -18,6 +18,7 @@ class InfluxDataIngest:
                  token: str):
         """
         Initialization constructor - start our DB-connection.
+
         :param url: Define url for the InfluxDB connection. Required.
         :param org: Define InfluxDB organization. Required.
         :param bucket: Define InfluxDB bucket to ingest into. Required.
@@ -35,27 +36,32 @@ class InfluxDataIngest:
         self._close_connection()
 
     def _establish_connection(self):
-        """ Create connection to InfluxDB """
+        """ Create connection to InfluxDB. """
         return InfluxDBClient(
             url=self.url,
             token=self.token,
             org=self.org)
 
     def _write_definitions(self):
-        """ Define write options for write_api """
+        """ Define write options for write_api. """
         return self.connection.write_api(write_options=SYNCHRONOUS)
 
     def _close_connection(self):
-        """ Closing connection to InfluxDB """
+        """ Closing connection to InfluxDB. """
         return self.client.close()
 
-    def write_point(self):
-        """ Write datapoint """
-        # TODO: Receive datapoint from call
-        # TODO: Create serializer for setting measurement information correctly
-        point = Point('measurement').tag('tab_name', 'tag_value').field(
-            'field_name', 'value')
+    def write_points(self, datapoints: list):
+        """
+        Write the provided datapoints to InfluxDB-bucket.
+
+        :param datapoints: List of dictionaries for all points to be written.
+            Required.
+        """
+        if not datapoints or not isinstance(datapoints, list):
+            ValueError('Provided "datapoints" is either not provided or is '
+                       'not a list.')
+
         return self.client.write(
             bucket=self.bucket,
             org=self.org,
-            record=point)
+            record=datapoints)
