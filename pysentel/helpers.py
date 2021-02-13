@@ -2,8 +2,40 @@
 """
 Helpers for pysentel.
 """
+import configparser
 from influxdb_client import InfluxDBClient
 from influxdb_client.client.write_api import SYNCHRONOUS
+
+
+class PysentelConfig(object):
+    """
+    Module for handling configs in an easy and objected manner.
+    """
+
+    def __init__(self):
+        """
+        Initialization constructor - create config-object and import configs.
+        """
+        # Initialize configparser and the config-file
+        self.config = configparser.ConfigParser()
+        self.config.read('/etc/pysentel/pysentel.ini')
+
+        try:
+            self.interval = int(self.config['Pysentel']['interval'])
+            self.sensors = self._get_sensors()
+            self.influxdb = dict(self.config.items('InfluxDBIngest'))
+        except configparser.NoSectionError:
+            pass
+
+    def _get_sensors(self) -> dict:
+        """
+        Internal function for extracting configured sensors
+        :return: Dict of sensors with sensor_id as key and name as value.
+        """
+        sensors = {}
+        for k, v in self.config.items('Sensors'):
+            sensors[k] = v
+        return sensors
 
 
 class InfluxDataIngest:

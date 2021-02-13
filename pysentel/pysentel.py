@@ -3,27 +3,23 @@
 Python script for requesting datapoints from 1-wire-protocol sensors and
 report it to an InfluxDB-bucket.
 """
-from w1thermsensor import W1ThermSensor, Sensor
 import time
-from .helpers import InfluxDataIngest
+from w1thermsensor import W1ThermSensor, Sensor
+from .helpers import PysentelConfig, InfluxDataIngest
 
 
 def main():
     """
     Main function. Run continuously with the provided sleep-delay interval.
     """
-    # TODO: Move config to a config-file in /etc for package install and get
-    #  user to fill in the information
-    sensor_names = {
-        'SENSOR-ID': 'Human name'}
-    delay: int = 10
-    url = 'http://localhost:port'
-    org = 'org-name'
-    bucket = 'bucket-na,e'
-    token = 'token'
+    # Initialize configurations
+    config = PysentelConfig()
 
     # Initialize InfluxDB connection
-    influxdb = InfluxDataIngest(url=url, org=org, bucket=bucket, token=token)
+    influxdb = InfluxDataIngest(url=config.influxdb['url'],
+                                org=config.influxdb['org'],
+                                bucket=config.influxdb['bucket'],
+                                token=config.influxdb['token'])
 
     # Run loop as long as this service is running
     while True:
@@ -35,7 +31,7 @@ def main():
             datapoints.append({
                 'measurement': 'temperature',
                 'tags': {
-                    'location': sensor_names[sensor.id],
+                    'location': config.sensors[sensor.id],
                     'type': sensor.type.name,
                     'sensor-id': sensor.id},
                 'fields': {
@@ -45,7 +41,7 @@ def main():
         # Ingest data
         influxdb.write_points(datapoints)
 
-        time.sleep(delay)
+        time.sleep(config.interval)
 
 
 if __name__ == "__main__":
