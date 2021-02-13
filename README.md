@@ -1,12 +1,15 @@
 # pysentel
 > A python script for fetching 1-wire sensor-data and ingesting in InfluxDB.
 
+[![PyPI version](https://badge.fury.io/py/pysentel.svg)](https://badge.fury.io/py/pysentel)
 
 Python script fetching sensor-data from e.g. DS18B20-sensors via the 1-wire protocol and ingest these datapoints into a specified InfluxDB-bucket.
 
 
-## Installation
-_Work-in-progress._
+## Installation and setup
+
+1. Install via `pip3 install pysentel`
+2. Setup _WIP_
 
 
 ## Usage example
