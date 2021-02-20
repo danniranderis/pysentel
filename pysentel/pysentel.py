@@ -42,7 +42,3 @@ def main():
         influxdb.write_points(datapoints)
 
         time.sleep(config.interval)
-
-
-if __name__ == "__main__":
-    main()
